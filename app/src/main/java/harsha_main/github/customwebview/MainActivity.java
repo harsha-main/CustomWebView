@@ -1,17 +1,22 @@
 package harsha_main.github.customwebview;
 
 
+import android.Manifest;
 import android.animation.Animator;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.Settings;
+import android.support.v4.app.ActivityCompat;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.webkit.WebView;
@@ -54,6 +59,13 @@ public class MainActivity extends Activity {
         but = findViewById(R.id.button);
         progressBar = findViewById(R.id.progressBar);
 
+        if (Build.VERSION.SDK_INT >= 23) {
+            if (checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    == PackageManager.PERMISSION_GRANTED) {
+            } else {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+            }
+        }
         device_id = Settings.Secure.getString(getContentResolver(),
                 Settings.Secure.ANDROID_ID);
         new File(base + directory).mkdirs();
@@ -65,7 +77,7 @@ public class MainActivity extends Activity {
                 progressBar.setVisibility(View.VISIBLE);
                 but.setVisibility(View.GONE);
                 Animator animator = null;
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     animator = ViewAnimationUtils.createCircularReveal(getWindow().getDecorView(), getWindow().getDecorView().getWidth() / 2, getWindow().getDecorView().getHeight() / 2, 0, 500);
                     animator.start();
                 }
@@ -183,7 +195,8 @@ public class MainActivity extends Activity {
             progressBar.setVisibility(View.GONE);
             webView.setVisibility(View.VISIBLE);
             webView.getSettings().setJavaScriptEnabled(true);
-            webView.loadUrl("file:///sdcard" + directory + "/First-Aid Kit.html");
+            Log.e("base", base + directory + "/First-Aid Kit.html");
+            webView.loadUrl("file:///" + base + directory + "/First-Aid Kit.html");
             Animator animator = null;
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
                 animator = ViewAnimationUtils.createCircularReveal(getWindow().getDecorView(), getWindow().getDecorView().getWidth() / 2, getWindow().getDecorView().getHeight() / 2, 500, 0);
