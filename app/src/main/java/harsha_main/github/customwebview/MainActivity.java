@@ -129,7 +129,7 @@ public class MainActivity extends Activity {
 
                 OutputStream output = new FileOutputStream(StorezipFileLocation);
 
-                byte data[] = new byte[1024];
+                byte data[] = new byte[8192];
 
                 while ((count = input.read(data)) != -1) {
 
